@@ -1,0 +1,19 @@
+{
+	"type":"CUBE_MANAGE",
+	"subtype":"INSTANCE_INFO"
+}
+{
+	"instance":"vtpm_emulator",
+	"manager":"cube_manager",
+	"path":"~/emu_module/vtpm_emulator"
+}
+{
+	"instance":"vtpm_manager",
+	"manager":"cube_manager",
+	"path":"~/emu_module/vtpm_manager"
+}
+{
+	"instance":"vtpm_hub",
+	"manager":"cube_manager",
+	"path":"~/emu_module/vtpm_hub"
+}

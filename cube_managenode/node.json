@@ -1,0 +1,13 @@
+{
+	"type":"CUBE_MANAGE",
+	"subtype":"NODE_INFO"
+}
+{
+	"manager":"node_manager",
+	"instance_num":3,
+	"instances":[
+		"vtpm_emulator",
+		"vtpm_manager",
+		"vtpm_hub"
+	]
+}
