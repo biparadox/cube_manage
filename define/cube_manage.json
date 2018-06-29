@@ -6,30 +6,351 @@
 	},
 	"record":
 	{
-		"elem_no":1,
+		"elem_no":7,
 		"elemlist":
 		[
-			"CUBE_MANAGE=0x310"
+			"CUBE_MANAGE_BASIC=0x310",
+			"CUBE_MANAGE_DATA",
+			"CUBE_MANAGE_MODULE",
+			"CUBE_MANAGE_ENTITY",
+			"CUBE_MANAGE_ROUTE",
+			"CUBE_MANAGE_CONN",
+			"CUBE_MANAGE_CHANNEL"
+		
 		]
 	}
 }
 {
 	"head":
 	{
-		"name":"subtype_cube_manage",
+		"name":"subtype_cube_manage_basic",
 		"type":"SUBTYPELIST"
 	},
 	"record":
 	{
-		"type":"CUBE_MANAGE",
-		"elem_no":4,
+		"type":"CUBE_MANAGE_BASIC",
+		"elem_no":2,
+		"elemlist":
+		[
+			"HEAD=0x01",
+			"REPLY"
+		]
+	}
+}
+{
+	"head":
+	{
+		"name":"subtype_cube_manage_data",
+		"type":"SUBTYPELIST"
+	},
+	"record":
+	{
+		"type":"CUBE_MANAGE_DATA",
+		"elem_no":7,
+		"elemlist":
+		[
+			"FORMAT=0x01",
+			"ELEM",
+			"TYPE_GROUP",
+			"TYPE",
+			"SUBTYPE",
+			"RECORDTYPE",
+			"RECORD"
+		]
+	}
+}
+{
+	"head":
+	{
+		"name":"subtype_cube_manage_entity",
+		"type":"SUBTYPELIST"
+	},
+	"record":
+	{
+		"type":"CUBE_MANAGE_ENTITY",
+		"elem_no":2,
 		"elemlist":
 		[
 			"NODE_INFO=0x01",
-			"INSTANCE_INFO",
-			"CONF_REQ",
-			"CONF_FILE"
+			"INSTANCE_INFO"
 		]
+	}
+}
+{
+	"head":
+	{
+		"name":"enum_manage_action",
+		"type":"NAMELIST"
+	},
+	"record":
+	{
+		"elem_no":5,
+		"elemlist":
+		[
+			"GET=0x01",
+			"POST",
+			"HEAD",
+			"DELETE",
+			"REPLY=0x10"
+		]
+	}
+}
+{
+	"head":
+	{
+		"name":"enum_manage_class",
+		"type":"NAMELIST"
+	},
+	"record":
+	{
+		"elem_no":2,
+		"elemlist":
+		[
+			"DATA=0x01",
+			"ENTITY"
+		]
+	}
+}
+{
+	"head":
+	{
+		"name":"flag_cube_elem_attr",
+		"type":"NAMELIST"
+	},
+	"record":
+	{
+		"elem_no":14,
+		"elemlist":
+		[
+			"POINTER=0x01",
+			"DEFINE=0x02",
+			"ARRAY=0x04",
+			"ENUM=0x10",
+			"FLAG=0x20",
+			"SUBSET=0x40",
+			"VALUE=0x80",
+			"NUM=0x100",
+			"BOOL=0x200",
+			"NAMELIST=0x400",
+			"REF=0x800",
+			"FIXSIZE=0x1000",
+			"SPECIAL=0x2000",
+			"EMPTY=0x8000"
+		]
+	}
+}
+{
+	"head":
+	{
+		"name":"cube_manage_head",
+		"type":"RECORDTYPE"
+	},
+	"record":
+	{
+		"type":"CUBE_MANAGE_BASIC",
+		"subtype":"HEAD",
+		"struct_desc":
+		{
+			"elem_desc":
+			[
+				{"name":"manage_action","type":"ENUM","ref_name":"enum_manage_action"},
+				{"name":"manage_class","type":"ENUM","ref_name":"enum_manage_class"},
+				{"name":"serialID","type":"UUID"}
+			]
+		}
+	}
+}
+{
+	"head":
+	{
+		"name":"cube_manage_reply",
+		"type":"RECORDTYPE"
+	},
+	"record":
+	{
+		"type":"CUBE_MANAGE_BASIC",
+		"subtype":"REPLY",
+		"struct_desc":
+		{
+			"elem_desc":
+			[
+				{"name":"manage_action","type":"ENUM","ref_name":"enum_manage_action"},
+				{"name":"manage_class","type":"ENUM","ref_name":"enum_manage_class"},
+				{"name":"return_code","type":"INT"},
+				{"name":"serialID","type":"UUID"}
+			]
+		}
+	}
+}
+{
+	"head":
+	{
+		"name":"cube_data_format",
+		"type":"RECORDTYPE"
+	},
+	"record":
+	{
+		"type":"CUBE_MANAGE_DATA",
+		"subtype":"FORMAT",
+		"struct_desc":
+		{
+			"elem_desc":
+			[
+				{"name":"name","type":"STRING","size":32},
+				{"name":"size","type":"INT"},
+				{"name":"attr","type":"FLAG","ref_name":"flag_cube_elem_attr"},
+				{"name":"desc","type":"ESTRING","size":512}
+			]
+		},
+		"index":
+		{
+			"flag":"INDEX",
+			"elemlist":"name,attr"
+		}
+	}
+}
+{
+	"head":
+	{
+		"name":"cube_data_typegroup",
+		"type":"RECORDTYPE"
+	},
+	"record":
+	{
+		"type":"CUBE_MANAGE_DATA",
+		"subtype":"TYPE_GROUP",
+		"struct_desc":
+		{
+			"elem_desc":
+			[
+				{"name":"name","type":"STRING","size":32},
+				{"name":"lower","type":"INT"},
+				{"name":"upper","type":"INT"},
+				{"name":"definefiles_num","type":"INT"},
+				{"name":"definefiles","type":"DEFSTRARRAY","size":64,"def":"definefiles_num"},
+				{"name":"desc","type":"ESTRING","size":512}
+			]
+		},
+		"index":
+		{
+			"flag":"INDEX",
+			"elemlist":"name,lower,upper,definefiles_num,definefiles"
+		}
+	}
+}
+{
+	"head":
+	{
+		"name":"cube_data_type",
+		"type":"RECORDTYPE"
+	},
+	"record":
+	{
+		"type":"CUBE_MANAGE_DATA",
+		"subtype":"TYPE",
+		"struct_desc":
+		{
+			"elem_desc":
+			[
+				{"name":"name","type":"STRING","size":32},
+				{"name":"value","type":"INT"},
+				{"name":"definefile","type":"ESTRING","size":128},
+				{"name":"desc","type":"ESTRING","size":512}
+			]
+		},
+		"index":
+		{
+			"flag":"INDEX",
+			"elemlist":"name,value,definefile"
+		}
+	}
+}
+{
+	"head":
+	{
+		"name":"cube_data_subtype",
+		"type":"RECORDTYPE"
+	},
+	"record":
+	{
+		"type":"CUBE_MANAGE_DATA",
+		"subtype":"SUBTYPE",
+		"struct_desc":
+		{
+			"elem_desc":
+			[
+				{"name":"name","type":"STRING","size":32},
+				{"name":"type","type":"INT"},
+				{"name":"value","type":"INT"},
+				{"name":"definefile","type":"ESTRING","size":128},
+				{"name":"desc","type":"ESTRING","size":512}
+			]
+		},
+		"index":
+		{
+			"flag":"INDEX",
+			"elemlist":"name,type,value,definefile"
+		}
+	}
+}
+{
+	"head":
+	{
+		"name":"cube_data_elem",
+		"type":"RECORDTYPE"
+	},
+	"record":
+	{
+		"type":"CUBE_MANAGE_DATA",
+		"subtype":"ELEM",
+		"struct_desc":
+		{
+			"elem_desc":
+			[
+				{"name":"name","type":"STRING","size":32},
+				{"name":"type","type":"ENUM","ref_name":"elemenumlist"},
+				{"name":"size","type":"INT"},
+				{"name":"ref","type":"UUID"},
+				{"name":"ref_name","type":"ESTRING","size":64},
+				{"name":"def","type":"ESTRING","size":64},
+				{"name":"desc","type":"ESTRING","size":512}
+			]
+		},
+		"index":
+		{
+			"flag":"INDEX",
+			"elemlist":"name,type,size,ref,ref_name,def"
+		}
+	}
+}
+{
+	"head":
+	{
+		"name":"cube_data_recordtype",
+		"type":"RECORDTYPE"
+	},
+	"record":
+	{
+		"type":"CUBE_MANAGE_DATA",
+		"subtype":"RECORDTYPE",
+		"struct_desc":
+		{
+			"elem_desc":
+			[
+				{"name":"name","type":"STRING","size":32},
+				{"name":"type","type":"INT"},
+				{"name":"subtype","type":"INT"},
+				{"name":"elem_no","type":"INT"},
+				{"name":"elems","type":"ARRAY","size":0,"ref_name":"cube_data_elem","def":"elem_no"},
+				{"name":"definefile","type":"ESTRING","size":128},
+				{"name":"desc","type":"ESTRING","size":512}
+			]
+		},
+		"index":
+		{
+			"flag":"INDEX",
+			"elemlist":"name,type,subtype,elem_no,elems,definefile"
+		}
 	}
 }
 {
@@ -40,7 +361,7 @@
 	},
 	"record":
 	{
-		"type":"CUBE_MANAGE",
+		"type":"CUBE_MANAGE_ENTITY",
 		"subtype":"NODE_INFO",
 		"struct_desc":
 		{
@@ -67,7 +388,7 @@
 	},
 	"record":
 	{
-		"type":"CUBE_MANAGE",
+		"type":"CUBE_MANAGE_ENTITY",
 		"subtype":"INSTANCE_INFO",
 		"struct_desc":
 		{
@@ -86,58 +407,3 @@
 		}
 	}	
 }
-{
-	"head":
-	{
-		"name":"cube_config_request",
-		"type":"RECORDTYPE"
-	},
-	"record":
-	{
-		"type":"CUBE_MANAGE",
-		"subtype":"CONF_REQ",
-		"struct_desc":
-		{
-			"elem_desc":
-			[
-				{"name":"uuid","type":"UUID"},
-				{"name":"instance","type":"STRING","size":32},
-				{"name":"manager","type":"STRING","size":32},
-				{"name":"conf_file","type":"ESTRING"}
-			]
-		},
-		"index":
-		{
-			"flag":"INDEX",
-			"elemlist":"uuid,instance,conf_file"
-		}
-	}
-}	
-{
-	"head":
-	{
-		"name":"cube_config_file",
-		"type":"RECORDTYPE"
-	},
-	"record":
-	{
-		"type":"CUBE_MANAGE",
-		"subtype":"CONF_FILE",
-		"struct_desc":
-		{
-			"elem_desc":
-			[
-				{"name":"uuid","type":"UUID"},
-				{"name":"instance","type":"STRING","size":32},
-				{"name":"manager","type":"STRING","size":32},
-				{"name":"conf_file","type":"ESTRING"}
-				{"name":"digest","type":"UUID"}
-			]
-		},
-		"index":
-		{
-			"flag":"INDEX",
-			"elemlist":"uuid,instance,conf_file"
-		}
-	}
-}	
