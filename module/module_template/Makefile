@@ -6,10 +6,11 @@ CCP=g++
 PLUGIN=module_template
 PLUGIN_OBJ=
 TEST_LIB= -L$(CUBELIBPATH)/lib -lmessage -lmemdb -lconnector -lstruct -lcrypto_func -lpthread
+LOCALLIB=-L$(CUBEAPPPATH)/locallib/bin -lstring_func
 
 main: lib$(PLUGIN).so
 lib$(PLUGIN).so:  $(PLUGIN).o $(PLUGIN_PROC_OBJ) $(INIT_DB_OBJ)
-	$(CC) $(FLAGS) lib$(PLUGIN).so $(PLUGIN).o $(PLUGIN_OBJ) $(TEST_LIB)
+	$(CC) $(FLAGS) lib$(PLUGIN).so $(PLUGIN).o $(PLUGIN_OBJ) $(TEST_LIB) $(LOCALLIB)
 	mv lib$(PLUGIN).so $(CUBE_SYS_PLUGIN)
 	cp $(PLUGIN).cfg $(CUBE_SYS_PLUGIN)
 $(PLUGIN).o: $(PLUGIN).c $(PLUGIN).h

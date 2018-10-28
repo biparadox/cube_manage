@@ -62,6 +62,25 @@
 {
 	"head":
 	{
+		"name":"subtype_cube_manage_module",
+		"type":"SUBTYPELIST"
+	},
+	"record":
+	{
+		"type":"CUBE_MANAGE_MODULE",
+		"elem_no":4,
+		"elemlist":
+		[
+			"DEFINE=0x01",
+			"PLUGIN",
+			"RECORD",
+			"MESSAGE"
+		]
+	}
+}
+{
+	"head":
+	{
 		"name":"subtype_cube_manage_entity",
 		"type":"SUBTYPELIST"
 	},
@@ -350,6 +369,34 @@
 		{
 			"flag":"INDEX",
 			"elemlist":"name,type,subtype,elem_no,elems,definefile"
+		}
+	}
+}
+{
+	"head":
+	{
+		"name":"cube_manage_module_define",
+		"type":"RECORDTYPE"
+	},
+	"record":
+	{
+		"type":"CUBE_MANAGE_MODULE",
+		"subtype":"DEFINE",
+		"struct_desc":
+		{
+			"elem_desc":
+			[
+				{"name":"name","type":"STRING","size":32},
+				{"name":"type","type":"ENUM","ref_name":"module_type"},
+				{"name":"module_path","type":"ESTRING","size":256},
+				{"name":"src_path","type":"ESTRING","size":256},
+				{"name":"desc","type":"ESTRING","size":512}
+			]
+		},
+		"index":
+		{
+			"flag":"INDEX",
+			"elemlist":"name,type"
 		}
 	}
 }

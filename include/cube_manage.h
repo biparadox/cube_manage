@@ -9,7 +9,8 @@ enum dtype_cube_manage
 	TYPE(CUBE_MANAGE_ENTITY),
 	TYPE(CUBE_MANAGE_ROUTE),
 	TYPE(CUBE_MANAGE_CONN),
-	TYPE(CUBE_MANAGE_CHANNEL)
+	TYPE(CUBE_MANAGE_CHANNEL),
+	TYPE(CUBE_MANAGE_ACTION)
 };
 enum subtype_cube_manage_basic
 {
@@ -25,6 +26,13 @@ enum subtype_cube_manage_data
 	SUBTYPE(CUBE_MANAGE_DATA,SUBTYPE),
 	SUBTYPE(CUBE_MANAGE_DATA,RECORDTYPE),
 	SUBTYPE(CUBE_MANAGE_DATA,RECORD)
+};
+enum subtype_cube_manage_module
+{
+	SUBTYPE(CUBE_MANAGE_MODULE,DEFINE)=0x01,
+	SUBTYPE(CUBE_MANAGE_MODULE,PLUGIN),
+	SUBTYPE(CUBE_MANAGE_MODULE,RECORD),
+	SUBTYPE(CUBE_MANAGE_MODULE,MESSAGE)
 };
 enum subtype_cube_manage_entity
 {
@@ -87,6 +95,14 @@ typedef struct cube_data_format
 	int  attr;  // flag with flag_cube_elem_attr
 	char * desc;
 }__attribute__((packed)) RECORD(CUBE_MANAGE_DATA,FORMAT);
+typedef struct cube_manage_module_define
+{
+	char name[DIGEST_SIZE];
+	int type;
+	char * module_path;
+	char * src_path;
+	char * desc;
+}__attribute__((packed)) RECORD(CUBE_MANAGE_MODULE,DEFINE);
 struct cube_node_info
 {
 	BYTE uuid[DIGEST_SIZE];

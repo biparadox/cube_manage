@@ -20,17 +20,23 @@
 #include "ex_module.h"
 #include "sys_func.h"
 
+#include "substring_func.h"
 #include "cube_manage.h"
 #include "module_template.h"
 #include "template_file.h"
 
 
+struct module_init_para * my_init_para;
 int module_template_init(void * sub_proc,void * para)
 {
 	int ret;
 	// add youself's plugin init func here
+	if(para==NULL)
+		return -EINVAL;
+	my_init_para = para;
 	return 0;
 }
+
 
 int module_template_start(void * sub_proc,void * para)
 {
@@ -42,17 +48,17 @@ int module_template_start(void * sub_proc,void * para)
 
 	RECORD(CUBE_MANAGE_MODULE,DEFINE) module_define;
 
-	if(para==NULL)
-		return -EINVAL;
-	module_init_para * my_init_para = para;
 
-	Memset(module_define,0,sizeof(module_define));
+	Memset(&module_define,0,sizeof(module_define));
 
 	Strncpy(module_define.name,my_init_para->module_name,DIGEST_SIZE);
 	module_define.type=MOD_TYPE_MONITOR;
-	module_define.src_path=dup_str(module_path,256);
+	module_define.src_path=dup_str(my_init_para->module_path,256);
 
 	proc_Makefile_gen(sub_proc,&module_define);	
+	proc_module_cfgfile_gen(sub_proc,&module_define);	
+	proc_module_headerfile_gen(sub_proc,&module_define);	
+	proc_module_srcfile_gen(sub_proc,&module_define);	
 
 	for(i=0;i<3000*1000;i++)
 	{
@@ -70,6 +76,7 @@ int module_template_start(void * sub_proc,void * para)
 				message_get_type(recv_msg),message_get_subtype(recv_msg));
 			continue;
 		}
+/*
 		if((type==DTYPE_MESSAGE)&&(subtype==SUBTYPE_CTRL_MSG))
 		{
 			ret=proc_ctrl_message(sub_proc,recv_msg);
@@ -80,41 +87,9 @@ int module_template_start(void * sub_proc,void * para)
 		{
 			proc_echo_message(sub_proc,recv_msg);
 		}
+*/
 	}
 	return 0;
-};
-
-int proc_module_create(void * sub_proc,void * message)
-{
-	int type;
-	int subtype;
-	int i;
-	int ret;
-	printf("begin proc module_create \n");
-
-	type=message_get_type(message);
-	subtype=message_get_subtype(message);
-
-	void * new_msg;
-	void * record;
-	new_msg=message_create(type,subtype,message);
-	
-	i=0;
-
-	ret=message_get_record(message,&record,i++);
-	if(ret<0)
-		return ret;
-	while(record!=NULL)
-	{
-		message_add_record(new_msg,record);
-		ret=message_get_record(message,&record,i++);
-		if(ret<0)
-			return ret;
-	}
-
-	ex_module_sendmsg(sub_proc,new_msg);
-
-	return ret;
 }
 
 int proc_Makefile_gen(void * sub_proc, void * para)
@@ -128,12 +103,10 @@ int proc_Makefile_gen(void * sub_proc, void * para)
 		return -EINVAL;
 	RECORD(CUBE_MANAGE_MODULE,DEFINE) * module_define =para;	
 
-	Strncpy(filepath,module_define->src_path);
+	Strncpy(filepath,module_define->src_path,512);
 	Strcat(filepath,"/");
 	Strcat(filepath,module_define->name);
 	ret=mkdir(filepath,0666);
-	if(ret<0)
-		return ret;
 		
 	Strcpy(filename,filepath);
 	Strcat(filename,"/");
@@ -145,7 +118,143 @@ int proc_Makefile_gen(void * sub_proc, void * para)
 	
 	for(i=0;Makefile_template[i]!=NULL;i++)
 	{
-		
+		Strncpy(filepath,Makefile_template[i],512);
+		if(find_substring(filepath,512,"##module_name##",0)>0)
+		{
+			replace_substring(filepath,512,"##module_name##",0,module_define->name,32);
+		}		
+		fprintf(fp,"%s\n",filepath);
 	}
+	fclose(fp);
+}
+
+int proc_module_cfgfile_gen(void * sub_proc, void * para)
+{
+	char filename[512];
+	char filepath[512];
+	FILE * fp;
+	int ret;
+	int i,j;
+	if(para==NULL)
+		return -EINVAL;
+	RECORD(CUBE_MANAGE_MODULE,DEFINE) * module_define =para;	
+
+	Strncpy(filepath,module_define->src_path,512);
+	Strcat(filepath,"/");
+	Strcat(filepath,module_define->name);
+	ret=mkdir(filepath,0666);
+		
+	Strcpy(filename,filepath);
+	Strcat(filename,"/");
+	Strcat(filename,module_define->name);
+	Strcat(filename,".cfg");
 	
+	fp=fopen(filename,"w+");
+	if(fp==NULL)
+		return -EIO;
+	
+	for(i=0;module_cfg_template[i]!=NULL;i++)
+	{
+		Strncpy(filepath,module_cfg_template[i],512);
+		if(find_substring(filepath,512,"##module_name##",0)>0)
+		{
+			replace_substring(filepath,512,"##module_name##",0,module_define->name,32);
+		}		
+		fprintf(fp,"%s\n",filepath);
+	}
+	fclose(fp);
+}
+
+int proc_module_headerfile_gen(void * sub_proc, void * para)
+{
+	char filename[512];
+	char filepath[512];
+	char Buf[32];
+	FILE * fp;
+	int ret;
+	int i,j;
+	if(para==NULL)
+		return -EINVAL;
+	RECORD(CUBE_MANAGE_MODULE,DEFINE) * module_define =para;	
+
+	Strncpy(filepath,module_define->src_path,512);
+	Strcat(filepath,"/");
+	Strcat(filepath,module_define->name);
+	ret=mkdir(filepath,0666);
+
+	Strncpy(Buf,module_define->name,32);
+	upper_substring(Buf,32,0,0);
+		
+	Strcpy(filename,filepath);
+	Strcat(filename,"/");
+	Strcat(filename,module_define->name);
+	Strcat(filename,".h");
+	
+	fp=fopen(filename,"w+");
+	if(fp==NULL)
+		return -EIO;
+	
+	for(i=0;module_header_template[i]!=NULL;i++)
+	{
+		Strncpy(filepath,module_header_template[i],512);
+		if(find_substring(filepath,512,"##module_name##",0)>0)
+		{
+			replace_substring(filepath,512,"##module_name##",0,module_define->name,32);
+		}		
+		if(find_substring(filepath,512,"##MODULE_NAME##",0)>0)
+		{
+			replace_substring(filepath,512,"##MODULE_NAME##",0,Buf,32);
+		}		
+		fprintf(fp,"%s\n",filepath);
+	}
+	fclose(fp);
+}
+
+int proc_module_srcfile_gen(void * sub_proc, void * para)
+{
+	char filename[512];
+	char filepath[512];
+	FILE * fp;
+	int ret;
+	int i,j;
+	if(para==NULL)
+		return -EINVAL;
+	RECORD(CUBE_MANAGE_MODULE,DEFINE) * module_define =para;	
+
+	Strncpy(filepath,module_define->src_path,512);
+	Strcat(filepath,"/");
+	Strcat(filepath,module_define->name);
+	ret=mkdir(filepath,0666);
+		
+	Strcpy(filename,filepath);
+	Strcat(filename,"/");
+	Strcat(filename,module_define->name);
+	Strcat(filename,".c");
+	
+	fp=fopen(filename,"w+");
+	if(fp==NULL)
+		return -EIO;
+	
+	for(i=0;module_src_template[i]!=NULL;i++)
+	{
+		Strncpy(filepath,module_src_template[i],512);
+		ret=find_substring(filepath,512,"##module_parameter##",0);
+		if(ret>0)
+		{
+			char para[32];
+			int start_site=ret+Strlen("##module_parameter##")-1;
+			ret=getpara_from_substring(filepath+start_site,512-start_site,'(',')',para);
+			if(ret<0)
+				fprintf(fp,"\n");
+			else
+				fprintf(fp,"// add para %s\n",para); 
+			continue;
+		}
+		if(find_substring(filepath,512,"##module_name##",0)>0)
+		{
+			replace_substring(filepath,512,"##module_name##",0,module_define->name,32);
+		}		
+		fprintf(fp,"%s\n",filepath);
+	}
+	fclose(fp);
 }
