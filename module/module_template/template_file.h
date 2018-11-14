@@ -31,7 +31,7 @@ char * module_cfg_template[] = {
 	"\"type\":\"MONITOR\",",
 	"\"dynamic_lib\":\"lib##module_name##.so\",",
 	"\"init\":\"##module_name##_init\",",
-	"\"start\":\"lib##module_name##_start\",",
+	"\"start\":\"##module_name##_start\",",
 	"}",	
 	NULL
 };

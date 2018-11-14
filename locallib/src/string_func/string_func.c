@@ -142,6 +142,31 @@ int upper_substring(char * string, int maxstrlen,int site, int len)
 	return upperlen;		
 }
  
+int lower_substring(char * string, int maxstrlen,int site, int len)
+{
+	int ret;
+	int i;
+	int strlen,upperlen;
+
+	if(maxstrlen==0)
+		strlen=Strlen(string);
+	else
+		strlen=Strnlen(string,maxstrlen);
+	if(strlen<0)
+		return strlen;
+	if(site>=strlen)
+		return 0;
+	upperlen=strlen-site;
+	if(len!=0)
+		if(len<upperlen)
+			upperlen=len;
+	for(i=site;i<site+upperlen;i++)
+	{
+		if((string[i]>='A')&&(string[i]<='Z'))
+			string[i]-='A'-'a';
+	}
+	return upperlen;		
+}
 int getpara_from_substring(char * string, int maxstrlen,char front, char end,char * para)
 {
 	int ret;
