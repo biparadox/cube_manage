@@ -1,0 +1,8 @@
+{
+	"type":"MESSAGE",
+	"subtype":"TYPES"
+}
+{
+	"type":"MESSAGE",
+	"subtype":0
+}
