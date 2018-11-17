@@ -70,6 +70,7 @@ int convert_record_elem(struct struct_elem_attr * elem_desc,char * elem_define)
 		case CUBE_TYPE_ELEMTYPE:
 		case CUBE_TYPE_RECORDTYPE:
 		case CUBE_TYPE_RECORDSUBTYPE:
+		case TPM_TYPE_UINT32:
 			sprintf(elem_define,"UINT32 %s;",elem_desc->name);
 			break;
 		case CUBE_TYPE_SENUM:

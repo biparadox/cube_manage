@@ -22,6 +22,7 @@
 #include "convert_elem.h"
 // add para lib_include
 
+char Buf[4096];
 int proc_types_message(void *sub_proc,void * recv_msg);
 int define_convert_init(void * sub_proc, void * para)
 {
@@ -68,7 +69,6 @@ int proc_types_message(void * sub_proc,void * message)
 	int subtype;
 	int i;
 	int ret;
-	char Buf[1024];
 	printf("begin proc types msg \n");
 
 	type=message_get_type(message);
@@ -103,7 +103,7 @@ int proc_types_message(void * sub_proc,void * message)
 
 		if(types_pair->subtype!=0)
 		{
-			ret=convert_record(type,subtype,Buf);
+			ret=convert_record(types_pair->type,types_pair->subtype,Buf);
 			if(ret>0)
 				printf("%s\n",Buf);		
 			else
@@ -120,7 +120,7 @@ int proc_types_message(void * sub_proc,void * message)
 			}	
 			for(i=0;i<subtypelist->elem_no;i++)
 			{
-				ret=convert_record(type,subtypelist->elemlist[i].value,Buf);
+				ret=convert_record(types_pair->type,subtypelist->elemlist[i].value,Buf);
 				if(ret>0)
 					printf("%s\n",Buf);		
 			}

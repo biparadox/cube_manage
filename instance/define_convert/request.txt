@@ -3,6 +3,6 @@
 	"subtype":"TYPES"
 }
 {
-	"type":"MESSAGE",
+	"type":"VTCM_IN",
 	"subtype":0
 }
