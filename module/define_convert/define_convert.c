@@ -93,7 +93,7 @@ int proc_types_message(void * sub_proc,void * message)
 		if(types_pair->subtype==0)
 		{
 
-			ret=convert_subtype(types_pair->subtype,NULL,Buf);
+			ret=convert_subtype(types_pair->type,NULL,Buf);
 
 			if(ret>0)
 				printf("%s\n",Buf);		

@@ -198,11 +198,11 @@ int convert_type(int start_type,int end_type, char * enum_name,char * record_def
 			continue;
 		if(count==0)
 		{
-			sprintf(record_define+offset,"\tTYPE(%s)",typestr);
+			sprintf(record_define+offset,"\tTYPE(%s)=0x%x",typestr,i);
 		}
 		else
 		{
-			sprintf(record_define+offset,",\n\tTYPE(%s)",typestr);
+			sprintf(record_define+offset,",\n\tTYPE(%s)=0x%x",typestr);
 		}
 		count++;
 		offset+=Strlen(record_define+offset);
