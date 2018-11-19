@@ -67,7 +67,7 @@ int proc_types_message(void * sub_proc,void * message)
 {
 	int type;
 	int subtype;
-	int i;
+	int i,j;
 	int ret;
 	printf("begin proc types msg \n");
 
@@ -77,6 +77,7 @@ int proc_types_message(void * sub_proc,void * message)
 	RECORD(MESSAGE,TYPES) * types_pair;
 	
 	i=0;
+	j=0;
 
 	ret=message_get_record(message,&types_pair,i++);
 	if(ret<0)
@@ -118,9 +119,9 @@ int proc_types_message(void * sub_proc,void * message)
 				printf("get error subtypelist!\n");
 				return -EINVAL;
 			}	
-			for(i=0;i<subtypelist->elem_no;i++)
+			for(j=0;j<subtypelist->elem_no;j++)
 			{
-				ret=convert_record(types_pair->type,subtypelist->elemlist[i].value,Buf);
+				ret=convert_record(types_pair->type,subtypelist->elemlist[j].value,Buf);
 				if(ret>0)
 					printf("%s\n",Buf);		
 			}

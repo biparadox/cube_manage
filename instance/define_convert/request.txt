@@ -1,8 +1,13 @@
 {
 	"type":"MESSAGE",
-	"subtype":"TYPES"
+	"subtype":"TYPES",
+	"mode":"INT"
 }
 {
-	"type":"VTCM_IN",
+	"type":"TSPI_IN",
+	"subtype":0
+}
+{
+	"type":"TSPI_OUT",
 	"subtype":0
 }
