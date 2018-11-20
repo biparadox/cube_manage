@@ -34,7 +34,7 @@ int convert_record(int type,int subtype, char * record_define)
 	typestr=memdb_get_typestr(type);	
 	subtypestr=memdb_get_subtypestr(type,subtype);	
 
-	sprintf(record_define,"struct tagRECORD(%s,%s){\n",typestr,subtypestr);
+	sprintf(record_define,"typedef struct tagRECORD(%s,%s){\n",typestr,subtypestr);
 	offset=Strlen(record_define);
 	for(i=0;record_template->struct_desc[i].name!=NULL;i++)
 	{
