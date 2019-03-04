@@ -4,10 +4,10 @@
 	"mode":"INT"
 }
 {
-	"type":"TSPI_IN",
+	"type":"SYSTEM_ENTITY",
 	"subtype":0
 }
 {
-	"type":"TSPI_OUT",
+	"type":"INTEGRITY_COLLECT",
 	"subtype":0
 }

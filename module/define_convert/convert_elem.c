@@ -28,13 +28,26 @@ int convert_record(int type,int subtype, char * record_define)
 	char Buf[128];
 	char * typestr;
 	char * subtypestr;
+	DB_RECORD * db_record;
 	STRUCT_NODE * record_template=memdb_get_template(type,subtype);
 	if(record_template==NULL)
 		return -EINVAL;
 	typestr=memdb_get_typestr(type);	
 	subtypestr=memdb_get_subtypestr(type,subtype);	
-
-	sprintf(record_define,"typedef struct tagRECORD(%s,%s){\n",typestr,subtypestr);
+	db_record=memdb_get_recordtype(type,subtype);
+	if(db_record==NULL)
+	{
+		print_cubeerr("no db_record in (%s, %s) record!\n",typestr,subtypestr); 
+	}
+	
+	if(db_record->head.name[0]!=0)
+	{
+		sprintf(record_define,"typedef struct %.32s{\n",db_record->head.name);
+	}
+	else
+	{
+		sprintf(record_define,"typedef struct tagRECORD(%s,%s){\n",typestr,subtypestr);
+	}
 	offset=Strlen(record_define);
 	for(i=0;record_template->struct_desc[i].name!=NULL;i++)
 	{

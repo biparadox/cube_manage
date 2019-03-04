@@ -23,13 +23,41 @@
 // add para lib_include
 
 char Buf[4096];
+static char * output_file;
+
 int proc_types_message(void *sub_proc,void * recv_msg);
 int define_convert_init(void * sub_proc, void * para)
 {
 	int ret;
 	// add yorself's module init func here
+    	struct init_struct * init_para=para;
+    	if(para==NULL)	 
+		output_file=NULL;
+	else
+	{
+		output_file=Dalloc0(Strlen(init_para->output_file)+1,NULL);
+		Strcpy(output_file,init_para->output_file);
+	}
 	return 0;
 }
+
+int _output_convert(char * convert_str)
+{
+	if(output_file==NULL)
+	{
+		printf("%s",convert_str);
+	}
+	else
+	{
+		FILE * fp=fopen(output_file,"a+");
+		if(fp==NULL)
+			return -EIO;
+		fprintf(fp,"%s",convert_str);
+		fclose(fp);
+	}	
+	return Strlen(convert_str);
+}
+
 int define_convert_start(void * sub_proc, void * para)
 {
 	int ret;
@@ -88,7 +116,10 @@ int proc_types_message(void * sub_proc,void * message)
 		ret=convert_type(types_pair->type,types_pair->type,"enum_cube_manage",Buf);
 
 		if(ret>0)
-			printf("%s\n",Buf);		
+		{
+			_output_convert(Buf);
+			_output_convert("\n");
+		}
 		else
 			printf("convert failed!\n");
 		if(types_pair->subtype==0)
@@ -97,7 +128,10 @@ int proc_types_message(void * sub_proc,void * message)
 			ret=convert_subtype(types_pair->type,NULL,Buf);
 
 			if(ret>0)
-				printf("%s\n",Buf);		
+			{
+				_output_convert(Buf);
+				_output_convert("\n");
+			}
 			else
 				printf("convert failed!\n");
 		}
@@ -106,7 +140,10 @@ int proc_types_message(void * sub_proc,void * message)
 		{
 			ret=convert_record(types_pair->type,types_pair->subtype,Buf);
 			if(ret>0)
-				printf("%s\n",Buf);		
+			{
+				_output_convert(Buf);
+				_output_convert("\n");
+			}
 			else
 				printf("convert failed!\n");
 		}
@@ -123,7 +160,10 @@ int proc_types_message(void * sub_proc,void * message)
 			{
 				ret=convert_record(types_pair->type,subtypelist->elemlist[j].value,Buf);
 				if(ret>0)
-					printf("%s\n",Buf);		
+				{
+					_output_convert(Buf);
+					_output_convert("\n");
+				}
 			}
 			
 		}
