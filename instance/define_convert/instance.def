@@ -1,10 +1,10 @@
 {
-	"CUBE_PATH":"/root/cube-1.3"
+	"CUBE_PATH":"/root/centoscloud/cube-1.3"
 }
 {
 	"CUBE_APP_PATH":"/root/cube_manage",
 	"INSTANCE":"instance/define_convert",
-	"CUBE_DEFINE_PATH":"/root/cube_manage/define/:/root/cube-tcm-1.12/define:/root/project_cubepolicy/define",
+	"CUBE_DEFINE_PATH":"/root/cube_manage/define/:/root/centoscloud/cube-tcm/define",
 	"CUBE_APP_LIB":"locallib/bin",
 	"PARAMS":"request.txt",
 	"CUBE_OUTPUT":"vtcm.log"

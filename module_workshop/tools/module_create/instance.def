@@ -1,0 +1,10 @@
+{
+	"CUBE_PATH":"/root/centoscloud/cube-1.3"
+}
+{
+	"CUBE_APP_PATH":"/root/cube_manage",
+	"INSTANCE":"instance/module_create",
+	"CUBE_DEFINE_PATH":"/root/cube_manage/define/",
+	"CUBE_APP_LIB":"locallib/bin",
+	"CUBE_OUTPUT":"vtcm.log"
+}

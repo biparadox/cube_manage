@@ -143,6 +143,8 @@ int proc_module_cfgfile_gen(void * sub_proc, void * para)
 	Strcat(filepath,"/");
 	Strcat(filepath,module_define->name);
 	ret=mkdir(filepath,0666);
+	if(ret<0)
+		print_cubeerr("Create module dir %s failed!\n",filepath);
 		
 	Strcpy(filename,filepath);
 	Strcat(filename,"/");

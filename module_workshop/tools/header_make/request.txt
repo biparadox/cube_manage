@@ -4,6 +4,6 @@
 	"mode":"INT"
 }
 {
-	"type":"MESSAGE",
+	"type":"LOGIN_TEST",
 	"subtype":0
 }
