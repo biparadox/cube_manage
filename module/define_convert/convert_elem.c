@@ -19,7 +19,7 @@
 
 // add para lib_include
 int convert_record_elem(struct struct_elem_attr * elem_desc,char * elem_define);
-int convert_get_structdefine(void * ref,char * define);
+int convert_get_structdefine(struct struct_elem_attr * elem_desc,char * define);
 int convert_record(int type,int subtype, char * record_define)
 {
 	int ret;
@@ -128,7 +128,7 @@ int convert_record_elem(struct struct_elem_attr * elem_desc,char * elem_define)
 			sprintf(elem_define,"struct struct_namelist * %s;",elem_desc->name);
 			break;
 		case CUBE_TYPE_SUBSTRUCT:    // this element describes a new struct in this site, attr points to the description of the new struct
-			offset = convert_get_structdefine(elem_desc->ref,elem_define);
+			offset = convert_get_structdefine(elem_desc,elem_define);
 			if(offset<0)
 				return offset;
 			if((elem_desc->size==0) || (elem_desc->size==1))
@@ -138,7 +138,7 @@ int convert_record_elem(struct struct_elem_attr * elem_desc,char * elem_define)
 			break;
 		case CUBE_TYPE_ARRAY:   // this elemen`t use an pointer point to a fixed number element
 		case CUBE_TYPE_DEFARRAY:   // this element has no data
-			offset = convert_get_structdefine(elem_desc->ref,elem_define);
+			offset = convert_get_structdefine(elem_desc,elem_define);
 			if(offset<0)
 				return offset;
 			sprintf(elem_define+offset," * %s;",elem_desc->name);
@@ -156,25 +156,29 @@ int convert_record_elem(struct struct_elem_attr * elem_desc,char * elem_define)
 	return Strlen(elem_define);	
 }
 
-int convert_get_structdefine(void * ref, char * struct_define)
+int convert_get_structdefine(struct struct_elem_attr * elem_desc, char * struct_define)
 {
 	DB_RECORD * substruct;
 	DB_RECORD * recordtype;
 	char * typestr;
 	char * subtypestr;
-	if(ref==NULL)
+	if(elem_desc==NULL)
 		return -EINVAL;	
 
-	substruct=memdb_find(ref,DB_STRUCT_DESC,0);
-	if(substruct==NULL)
+	char * substruct_name;
+	substruct_name=elem_desc->def;
+
+	if(substruct_name==NULL)
+	{
+		print_cubeerr("convert_get_structdefine:convert elem %s failed!",elem_desc->name);
 		return -EINVAL;
+	}
+
 		
-	recordtype=memdb_find_first(DB_RECORDTYPE,0,"uuid",ref);
+	recordtype=memdb_find_byname(substruct_name,DB_RECORDTYPE,0);
 	if(recordtype!=NULL)
 	{
 		struct struct_recordtype *record_data = recordtype->record;
-		
-
 	
 		typestr=memdb_get_typestr(record_data->type);	
 		if(typestr==NULL)
@@ -183,7 +187,7 @@ int convert_get_structdefine(void * ref, char * struct_define)
 		if(subtypestr==NULL)
 			return -EINVAL;
 	
-		sprintf(struct_define,"RECORD(%s %s) ",typestr,subtypestr);
+		sprintf(struct_define,"RECORD(%s,%s) ",typestr,subtypestr);
 	}
 	else
 	{
