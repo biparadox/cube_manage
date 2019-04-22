@@ -106,7 +106,7 @@ int proc_Makefile_gen(void * sub_proc, void * para)
 	Strncpy(filepath,module_define->src_path,512);
 	Strcat(filepath,"/");
 	Strcat(filepath,module_define->name);
-	ret=mkdir(filepath,0666);
+	ret=mkdir(filepath,0777);
 		
 	Strcpy(filename,filepath);
 	Strcat(filename,"/");
