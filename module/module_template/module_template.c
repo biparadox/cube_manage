@@ -171,7 +171,7 @@ int proc_module_headerfile_gen(void * sub_proc, void * para)
 {
 	char filename[512];
 	char filepath[512];
-	char Buf[32];
+	char Buf[64];
 	FILE * fp;
 	int ret;
 	int i,j;
@@ -201,11 +201,11 @@ int proc_module_headerfile_gen(void * sub_proc, void * para)
 		Strncpy(filepath,module_header_template[i],512);
 		if(find_substring(filepath,512,"##module_name##",0)>0)
 		{
-			replace_substring(filepath,512,"##module_name##",0,module_define->name,32);
+			replace_substring(filepath,512,"##module_name##",0,module_define->name,64);
 		}		
 		if(find_substring(filepath,512,"##MODULE_NAME##",0)>0)
 		{
-			replace_substring(filepath,512,"##MODULE_NAME##",0,Buf,32);
+			replace_substring(filepath,512,"##MODULE_NAME##",0,Buf,64);
 		}		
 		fprintf(fp,"%s\n",filepath);
 	}
@@ -254,7 +254,7 @@ int proc_module_srcfile_gen(void * sub_proc, void * para)
 		}
 		if(find_substring(filepath,512,"##module_name##",0)>0)
 		{
-			replace_substring(filepath,512,"##module_name##",0,module_define->name,32);
+			replace_substring(filepath,512,"##module_name##",0,module_define->name,64);
 		}		
 		fprintf(fp,"%s\n",filepath);
 	}

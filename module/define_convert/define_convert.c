@@ -113,7 +113,7 @@ int proc_types_message(void * sub_proc,void * message)
 	while(types_pair!=NULL)
 	{
 		
-		ret=convert_type(types_pair->type,types_pair->type,"enum_cube_manage",Buf);
+		ret=convert_type(types_pair->type,types_pair->type,NULL,Buf);
 
 		if(ret>0)
 		{

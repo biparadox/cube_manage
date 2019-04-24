@@ -56,12 +56,16 @@ int __move_string_tail(char * string, int maxstrlen, int site,int new_site)
 
 	if(site<new_site)
 	{
-		if(strlen+new_site-site>maxstrlen)
+		i=strlen;
+		int j=i+new_site-site;
+		if(j>maxstrlen)
 			return -EINVAL;
-		for(i=strlen;i>=new_site;i--)
-			string[i-1]=string[i+new_site-site];
-		if(strlen<maxstrlen)
-			string[strlen]=0;
+
+		if(j<maxstrlen)
+			string[j]=0;
+		
+		for(;i>=site;i--,j--)
+			string[j-1]=string[i-1];
 	}
 	else
 	{

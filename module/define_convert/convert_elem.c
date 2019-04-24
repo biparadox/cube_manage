@@ -206,14 +206,27 @@ int convert_type(int start_type,int end_type, char * enum_name,char * record_def
 	char Buf[128];
 	char * typestr;
 
-	sprintf(record_define,"enum %s {\n",enum_name);
-	offset=Strlen(record_define);
+	if(enum_name!=NULL)
+	{
+		sprintf(record_define,"enum %s {\n",enum_name);
+		offset=Strlen(record_define);
+	}
+	else
+		offset=0;
 
 	for(i=start_type;i<=end_type;i++)
 	{
 		typestr=memdb_get_typestr(i);
 		if(typestr==NULL)
 			continue;
+		if(offset==0)
+		{
+			Strncpy(Buf,typestr,128);
+			lower_substring(Buf,128,0,0);
+			sprintf(record_define,"enum dtype_%s {\n",Buf);
+			offset=Strlen(record_define);
+		}
+
 		if(count==0)
 		{
 			sprintf(record_define+offset,"\tTYPE(%s)=0x%x",typestr,i);
